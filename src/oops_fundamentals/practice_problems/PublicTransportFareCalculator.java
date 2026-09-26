@@ -1,0 +1,83 @@
+import java.util.Scanner;
+
+public class PublicTransportFareCalculator {
+
+    interface Transport {
+        double calculateFare(double distance, double peakHourFactor);
+        String getType();
+    }
+
+    static class Bus implements Transport {
+        public double calculateFare(double distance, double peakHourFactor) {
+            double fare = 2 + (0.10 * distance);
+            return Math.min(fare, 10);
+        }
+
+        public String getType() {
+            return "BUS";
+        }
+    }
+
+    static class Train implements Transport {
+        public double calculateFare(double distance, double peakHourFactor) {
+            return 3 + (0.15 * distance);
+        }
+
+        public String getType() {
+            return "TRAIN";
+        }
+    }
+
+    static class Metro implements Transport {
+        public double calculateFare(double distance, double peakHourFactor) {
+            double fare = 1.50 + (0.20 * distance);
+            return fare * peakHourFactor;
+        }
+
+        public String getType() {
+            return "METRO";
+        }
+    }
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+
+        int n = sc.nextInt();
+        double total = 0;
+
+        for (int i = 0; i < n; i++) {
+
+            String type = sc.next();
+
+            double distance = sc.nextDouble();
+            double peakHourFactor = 1.0;
+
+            if (type.equals("METRO")) {
+                peakHourFactor = sc.nextDouble();
+            }
+
+            Transport transport;
+
+            if (type.equals("BUS")) {
+                transport = new Bus();
+            } else if (type.equals("TRAIN")) {
+                transport = new Train();
+            } else {
+                transport = new Metro();
+            }
+
+            double fare =
+                    transport.calculateFare(distance, peakHourFactor);
+
+            System.out.printf("%s: %.2f%n",
+                    transport.getType(), fare);
+
+            total += fare;
+        }
+
+        System.out.printf("Total: %.2f%n", total);
+
+        sc.close();
+    }
+}
